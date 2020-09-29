@@ -1,4 +1,5 @@
 FROM ubuntu:18.04
+ENV app=hobot-dev
 RUN apt-get update && \
     apt-get -y install sudo openssh-server nodejs npm libx11-xcb-dev libasound2 git xauth && \
     mkdir /var/run/sshd && \
@@ -19,7 +20,6 @@ RUN apt-get install -y software-properties-common && \
     rm /tmp/packages-microsoft-prod.deb && \
     apt-get install -y software-properties-common && \
     add-apt-repository universe && \
-    apt-get update && \
     apt-get install -y apt-transport-https && \
     apt-get update && \
     apt-get install -y dotnet-sdk-3.1
@@ -30,13 +30,13 @@ RUN wget -O /tmp/code.deb https://go.microsoft.com/fwlink/?LinkID=760868 && \
     wget -q https://dl.google.com/go/go1.14.linux-amd64.tar.gz -O /tmp/go1.14.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf /tmp/go1.14.linux-amd64.tar.gz && \
     rm /tmp/go1.14.linux-amd64.tar.gz && \
-    npm install -g @vue/cli && \
-    apt-get clean && \
+    apt-get install -y build-essential gdb cmake && \
+    apt-get install -y libxcb-dri3-dev
+RUN apt-get install -y libdrm2 libgbm-dev
+RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 USER ahihi
-RUN code --install-extension octref.vetur && \
-    code --install-extension ms-dotnettools.csharp && \
-    code --install-extension ms-vscode.go && \
+RUN code --install-extension ms-vscode.cpptools && \
     echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
 USER root
 ENTRYPOINT ["sh", "-c", "/usr/sbin/sshd && tail -f /dev/null"]
