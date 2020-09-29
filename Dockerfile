@@ -14,30 +14,20 @@ RUN apt-get update && \
     sed -i "s/^.*X11Forwarding.*$/X11Forwarding yes/" /etc/ssh/sshd_config && \
     sed -i "s/^.*X11UseLocalhost.*$/X11UseLocalhost no/" /etc/ssh/sshd_config && \
     grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
-RUN apt-get install -y software-properties-common && \
-    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O /tmp/packages-microsoft-prod.deb && \
-    dpkg -i /tmp/packages-microsoft-prod.deb && \
-    rm /tmp/packages-microsoft-prod.deb && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository universe && \
-    apt-get install -y apt-transport-https && \
-    apt-get update && \
-    apt-get install -y dotnet-sdk-3.1
-RUN useradd -m -p $(openssl passwd -1 123456) -s /bin/bash ahihi && \
-    usermod -aG sudo ahihi
 RUN wget -O /tmp/code.deb https://go.microsoft.com/fwlink/?LinkID=760868 && \
     apt install -y /tmp/code.deb && rm /tmp/code.deb && \
-    wget -q https://dl.google.com/go/go1.14.linux-amd64.tar.gz -O /tmp/go1.14.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf /tmp/go1.14.linux-amd64.tar.gz && \
-    rm /tmp/go1.14.linux-amd64.tar.gz && \
-    apt-get install -y build-essential gdb cmake && \
-    apt-get install -y libxcb-dri3-dev
-RUN apt-get install -y libdrm2 libgbm-dev
+    apt-get install -y build-essential gdb libxcb-dri3-dev libdrm2 libgbm-dev cmake libpcre3-dev zlib1g-dev libgcrypt11-dev libicu-dev python
+RUN wget -O /tmp/cppcms-1.2.1.tar.gz https://github.com/artyom-beilis/cppcms/archive/v1.2.1.tar.gz && \
+    cd /tmp && tar -xf cppcms-1.2.1.tar.gz && \
+    mkdir -p /tmp/cppcms-1.2.1/build && \
+    cd /tmp/cppcms-1.2.1/build && cmake .. && make && make install && \
+    rm -rf /tmp/cppcms-1.2.1 && rm /tmp/cppcms-1.2.1.tar.gz
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+RUN useradd -m -p '$1$5S2c1nJQ$C8.DfrGIIj8LyhHqihhUg0' -s /bin/bash ahihi && \
+    usermod -aG sudo ahihi
 USER ahihi
 RUN code --install-extension ms-vscode.cpptools && \
-    echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
+    code --install-extension ms-vscode.cmake-tools
 USER root
 ENTRYPOINT ["sh", "-c", "/usr/sbin/sshd && tail -f /dev/null"]
-
