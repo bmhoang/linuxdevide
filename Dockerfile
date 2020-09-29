@@ -30,4 +30,5 @@ USER ahihi
 RUN code --install-extension ms-vscode.cpptools && \
     code --install-extension ms-vscode.cmake-tools
 USER root
+ENV LD_LIBRARY_PATH=/usr/local/lib
 ENTRYPOINT ["sh", "-c", "/usr/sbin/sshd && tail -f /dev/null"]
