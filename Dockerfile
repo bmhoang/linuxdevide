@@ -22,6 +22,7 @@ RUN wget -O /tmp/cppcms-1.2.1.tar.gz https://github.com/artyom-beilis/cppcms/arc
     mkdir -p /tmp/cppcms-1.2.1/build && \
     cd /tmp/cppcms-1.2.1/build && cmake .. && make && make install && \
     rm -rf /tmp/cppcms-1.2.1 && rm /tmp/cppcms-1.2.1.tar.gz
+RUN apt-get update && apt-get install -y libcurl4-openssl-dev
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN useradd -m -p '$1$5S2c1nJQ$C8.DfrGIIj8LyhHqihhUg0' -s /bin/bash ahihi && \
